@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HackIA 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* ═══ DARK THEME (default) ═══ */
+  [data-theme="dark"] {
+    --bg-primary: #0c1017;
+    --bg-secondary: #131a24;
+    --bg-card: #172031;
+    --bg-card-hover: #1c2740;
+    --bg-input: #0e141d;
+    --border: #1e2d42;
+    --border-light: #263550;
+    --text-primary: #f0f2f5;
+    --text-secondary: #8494a7;
+    --text-muted: #526580;
+    --accent: #6366f1;
+    --accent-light: #818cf8;
+    --accent-glow: rgba(99,102,241,.25);
+    --green: #22c55e;
+    --green-glow: rgba(34,197,94,.2);
+    --red: #ef4444;
+    --orange: #f59e0b;
+    --log-color: #22c55e;
+    --login-glow: rgba(99,102,241,.08);
+    --shadow: 0 4px 24px rgba(0,0,0,.3);
+    --shadow-lg: 0 8px 40px rgba(0,0,0,.4);
+    --btn-color: #fff;
+  }
+
+  /* ═══ LIGHT THEME ═══ */
+  [data-theme="light"] {
+    --bg-primary: #f5f7fa;
+    --bg-secondary: #ffffff;
+    --bg-card: #ffffff;
+    --bg-card-hover: #f0f2f5;
+    --bg-input: #f0f2f5;
+    --border: #e2e6eb;
+    --border-light: #d0d5dd;
+    --text-primary: #1a1d23;
+    --text-secondary: #5f6b7a;
+    --text-muted: #8494a7;
+    --accent: #6366f1;
+    --accent-light: #4f46e5;
+    --accent-glow: rgba(99,102,241,.12);
+    --green: #16a34a;
+    --green-glow: rgba(34,197,94,.1);
+    --red: #dc2626;
+    --orange: #d97706;
+    --log-color: #16a34a;
+    --login-glow: rgba(99,102,241,.06);
+    --shadow: 0 4px 24px rgba(0,0,0,.08);
+    --shadow-lg: 0 8px 40px rgba(0,0,0,.1);
+    --btn-color: #fff;
+  }
+
+  :root {
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    transition: background .2s, color .2s;
+  }
+
+  /* ═══ LOGIN ═══ */
+  #login-screen {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 100vh; gap: 28px;
+    background: radial-gradient(ellipse at 50% 0%, var(--login-glow) 0%, transparent 60%),
+                var(--bg-primary);
+  }
+  .login-icon {
+    width: 64px; height: 64px; border-radius: 18px;
+    background: linear-gradient(135deg, var(--accent), #a855f7);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 700; color: #fff; letter-spacing: .5px;
+    box-shadow: 0 0 30px var(--accent-glow);
+  }
+  #login-screen h1 {
+    font-size: 2.6em; font-weight: 800; color: var(--text-primary);
+    letter-spacing: -0.03em;
+  }
+  #login-screen .login-sub {
+    color: var(--text-secondary); font-size: 1.05em; margin-top: -12px;
+  }
+  #login-feed {
+    width: 520px; max-width: 90vw; border-radius: var(--radius);
+    border: 2px solid var(--border-light); display: none;
+    box-shadow: var(--shadow-lg);
+  }
+  #login-status {
+    font-size: 1.05em; min-height: 1.4em; color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  /* Buttons */
+  .btn {
+    padding: 13px 36px; border: none; border-radius: var(--radius-sm);
+    font-family: 'Inter', sans-serif; font-size: 0.95em; font-weight: 600;
+    cursor: pointer; transition: all .2s ease; position: relative; overflow: hidden;
+    color: var(--btn-color);
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    box-shadow: 0 2px 12px var(--accent-glow);
+  }
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 24px var(--accent-glow);
+    filter: brightness(1.1);
+  }
+  .btn-primary:active { transform: translateY(0); }
+  .btn:disabled { opacity: .5; cursor: not-allowed; transform: none !important; filter: none !important; }
+
+  .btn-fire { background: linear-gradient(135deg, #ef4444, #f97316); box-shadow: 0 2px 12px rgba(239,68,68,.25); }
+  .btn-fire:hover { box-shadow: 0 6px 24px rgba(239,68,68,.35); }
+  .btn-obj { background: linear-gradient(135deg, #22c55e, #06b6d4); box-shadow: 0 2px 12px rgba(34,197,94,.25); }
+  .btn-obj:hover { box-shadow: 0 6px 24px rgba(34,197,94,.35); }
+  .btn-fall { background: linear-gradient(135deg, #f59e0b, #ef4444); box-shadow: 0 2px 12px rgba(245,158,11,.25); }
+  .btn-fall:hover { box-shadow: 0 6px 24px rgba(245,158,11,.35); }
+  .btn-ghost {
+    padding: 11px 18px; background: var(--bg-card); color: var(--text-secondary);
+    border: 1px solid var(--border); box-shadow: none;
+  }
+  .btn-ghost:hover:not(:disabled) { background: var(--bg-card-hover); color: var(--text-primary); border-color: var(--border-light); }
+  .btn-stop:not(:disabled) { color: var(--red); border-color: rgba(239,68,68,.3); }
+  .btn-stop:hover:not(:disabled) { background: rgba(239,68,68,.1); border-color: var(--red); }
+  .ctrl-row { display: flex; gap: 8px; }
+  .ctrl-row .btn { flex: 1; padding: 9px 14px; font-size: .85em; }
+
+  /* ═══ DASHBOARD ═══ */
+  #dashboard { display: none; min-height: 100vh; }
+
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 28px; height: 60px;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+    transition: background .2s, border-color .2s;
+  }
+  .topbar-brand {
+    display: flex; align-items: center; gap: 12px;
+  }
+  .topbar-brand .brand-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: linear-gradient(135deg, var(--accent), #a855f7);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; color: #fff;
+  }
+  .topbar-brand h1 { font-size: 1.15em; font-weight: 700; color: var(--text-primary); }
+  .topbar .user-info { display: flex; align-items: center; gap: 14px; }
+  .btn-logout {
+    padding: 7px 16px; font-size: .82em; border-radius: 6px;
+    border: 1px solid var(--border); background: transparent;
+    color: var(--text-secondary); cursor: pointer; font-family: 'Inter', sans-serif;
+    font-weight: 500; transition: all .15s;
+  }
+  .btn-logout:hover { background: rgba(239,68,68,.1); color: var(--red); border-color: rgba(239,68,68,.3); }
+
+  /* Theme toggle */
+  .theme-toggle {
+    padding: 7px 14px; font-size: .82em; border-radius: 6px;
+    border: 1px solid var(--border); background: var(--bg-card);
+    color: var(--text-secondary); cursor: pointer; font-family: 'Inter', sans-serif;
+    font-weight: 500; transition: all .15s; display: flex; align-items: center; gap: 6px;
+  }
+  .theme-toggle:hover { border-color: var(--accent); color: var(--text-primary); }
+
+  .layout { display: flex; min-height: calc(100vh - 60px); }
+
+  /* Sidebar */
+  .sidebar {
+    width: 230px; background: var(--bg-secondary); border-right: 1px solid var(--border);
+    padding: 20px 0; flex-shrink: 0; display: flex; flex-direction: column; gap: 4px;
+    transition: background .2s, border-color .2s;
+  }
+  .sidebar-label {
+    padding: 8px 24px 10px; font-size: .7em; font-weight: 700; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 1.2px;
+  }
+  .sidebar-item {
+    display: flex; align-items: center; gap: 10px; width: calc(100% - 16px); margin: 0 8px;
+    padding: 11px 16px; border: none; background: none; color: var(--text-secondary);
+    font-family: 'Inter', sans-serif; font-size: .88em; font-weight: 500;
+    text-align: left; cursor: pointer; transition: all .15s;
+    border-radius: var(--radius-sm);
+  }
+  .sidebar-item:hover { background: var(--bg-card); color: var(--text-primary); }
+  .sidebar-item.active {
+    background: var(--accent-glow); color: var(--accent-light); font-weight: 600;
+  }
+
+  /* Content */
+  .content {
+    flex: 1; padding: 28px 32px; overflow-y: auto; background: var(--bg-primary);
+    transition: background .2s;
+  }
+  .panel { display: none; }
+  .panel.active { display: block; animation: fadeIn .25s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  .panel-header { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+  .panel-header .panel-icon {
+    width: 42px; height: 42px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center; font-size: 20px;
+    flex-shrink: 0;
+  }
+  .panel-header .panel-icon.fire { background: rgba(239,68,68,.15); }
+  .panel-header .panel-icon.obj { background: rgba(34,197,94,.15); }
+  .panel-header .panel-icon.fall { background: rgba(245,158,11,.15); }
+  .panel-title { font-size: 1.35em; font-weight: 700; color: var(--text-primary); }
+  .panel-sub { color: var(--text-muted); font-size: .88em; margin-top: 2px; }
+
+  .panel-body { display: flex; gap: 22px; }
+  .panel-left { width: 280px; flex-shrink: 0; display: flex; flex-direction: column; gap: 14px; }
+  .panel-right { flex: 1; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+
+  /* Cards */
+  .card {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 18px; transition: border-color .2s, background .2s;
+  }
+  .card:hover { border-color: var(--border-light); }
+  .card-label {
+    display: block; color: var(--text-muted); font-size: .75em; margin-bottom: 8px;
+    font-weight: 600; text-transform: uppercase; letter-spacing: .8px;
+  }
+  .card input[type="file"] {
+    color: var(--text-secondary); font-size: .85em; font-family: 'Inter', sans-serif;
+    width: 100%;
+  }
+  .card input[type="file"]::file-selector-button {
+    padding: 6px 14px; border: 1px solid var(--border); border-radius: 6px;
+    background: var(--bg-input); color: var(--text-secondary); cursor: pointer;
+    font-family: 'Inter', sans-serif; font-size: .85em; font-weight: 500;
+    margin-right: 10px; transition: all .15s;
+  }
+  .card input[type="file"]::file-selector-button:hover {
+    background: var(--bg-card-hover); color: var(--text-primary);
+  }
+
+  /* Checkbox pills */
+  .checkbox-group { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0; }
+  .checkbox-group label {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 14px; background: var(--bg-input); border: 1px solid var(--border);
+    border-radius: 20px; cursor: pointer; font-size: .82em; color: var(--text-secondary);
+    transition: all .15s; user-select: none;
+  }
+  .checkbox-group label:has(input:checked) {
+    background: var(--accent-glow); border-color: var(--accent); color: var(--accent-light);
+  }
+  .checkbox-group input { display: none; }
+
+  /* Select dropdown — matches the card/checkbox-pill aesthetic */
+  .card select {
+    width: 100%; padding: 8px 12px; background: var(--bg-input);
+    color: var(--text-primary); border: 1px solid var(--border); border-radius: 8px;
+    font-family: 'Inter', sans-serif; font-size: .88em; cursor: pointer;
+    transition: border-color .15s, background .15s;
+  }
+  .card select:hover  { border-color: var(--border-light); background: var(--bg-card-hover); }
+  .card select:focus  { outline: none; border-color: var(--accent); }
+
+  /* Media display */
+  .media-box {
+    background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius);
+    overflow: hidden; display: flex; align-items: center; justify-content: center;
+    color: var(--text-muted); min-height: 350px; max-height: 700px;
+    font-size: .9em; font-weight: 500; transition: background .2s, border-color .2s;
+  }
+  .media-box img {
+    max-width: 100%; max-height: 690px; object-fit: contain; display: block;
+  }
+  .media-row { display: flex; gap: 14px; }
+  .media-row > .media-col { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+  .media-col-label {
+    color: var(--text-muted); font-size: .72em; font-weight: 600;
+    text-transform: uppercase; letter-spacing: .8px;
+  }
+
+  /* Logs */
+  .log-box {
+    background: var(--bg-input); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 16px 18px;
+    font-family: 'JetBrains Mono', monospace; font-size: .78em; font-weight: 400;
+    color: var(--log-color); height: 260px; overflow-y: auto;
+    white-space: pre-wrap; line-height: 1.7;
+    transition: background .2s, border-color .2s;
+  }
+  .log-box::-webkit-scrollbar { width: 6px; }
+  .log-box::-webkit-scrollbar-track { background: transparent; }
+  .log-box::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* Spinner */
+  .spinner {
+    display: inline-block; width: 18px; height: 18px;
+    border: 2.5px solid var(--border); border-top-color: var(--accent);
+    border-radius: 50%; animation: spin .7s linear infinite;
+    vertical-align: middle; margin-right: 8px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .media-placeholder {
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    color: var(--text-muted);
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-icon">IA</div>
+  <h1>HackIA 2026</h1>
+  <p class="login-sub">Connexion par reconnaissance faciale</p>
+  <img id="login-feed" alt="Flux caméra">
+  <div id="login-status"></div>
+  <button class="btn btn-primary" id="login-btn" onclick="startLogin()">Se connecter</button>
+  <button class="btn-logout" id="login-cancel" onclick="cancelLogin()" style="display:none">Annuler</button>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+  <div class="topbar">
+    <div class="topbar-brand">
+      <div class="brand-icon">IA</div>
+      <h1>HackIA 2026</h1>
+    </div>
+    <div class="user-info">
+      <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()">
+        <span id="theme-icon">&#x2600;&#xfe0f;</span> Clair
+      </button>
+      <button class="btn-logout" onclick="doLogout()">Déconnexion</button>
+    </div>
+  </div>
+
+  <div class="layout">
+    <nav class="sidebar">
+      <div class="sidebar-label">Modules</div>
+      <button class="sidebar-item active" onclick="switchPanel('fire',this)">
+        Feu de forêt
+      </button>
+      <button class="sidebar-item" onclick="switchPanel('objects',this)">
+        Détection d'objets
+      </button>
+      <button class="sidebar-item" onclick="switchPanel('fall',this)">
+        Détection de chute
+      </button>
+    </nav>
+
+    <main class="content">
+
+      <!-- FIRE -->
+      <div class="panel active" id="panel-fire">
+        <div class="panel-header">
+          <div class="panel-icon fire">&#x1f525;</div>
+          <div>
+            <div class="panel-title">Détection de feu de forêt</div>
+            <div class="panel-sub">Classification + localisation YOLO &mdash; inférence en direct</div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="panel-left">
+            <div class="card">
+              <span class="card-label">Source vidéo</span>
+              <div class="checkbox-group">
+                <label><input type="radio" name="fire-source" value="default" checked onchange="onSourceChange('fire')"><span>Défaut</span></label>
+                <label><input type="radio" name="fire-source" value="upload" onchange="onSourceChange('fire')"><span>Upload</span></label>
+                <label><input type="radio" name="fire-source" value="webcam" onchange="onSourceChange('fire')"><span>Webcam</span></label>
+              </div>
+              <input type="file" id="fire-file" accept="video/*" style="display:none;margin-top:10px;">
+              <div id="fire-source-hint" style="color:var(--text-muted);font-size:.78em;margin-top:6px;">Vidéo par défaut : fire.mp4</div>
+            </div>
+            <button class="btn btn-fire" id="fire-btn" onclick="runFireStream()" style="width:100%">Détecter le feu</button>
+            <div class="ctrl-row">
+              <button class="btn btn-ghost" id="fire-pause-btn" onclick="togglePause('fire')" disabled>Pause</button>
+              <button class="btn btn-ghost btn-stop" id="fire-stop-btn" onclick="doStop('fire')" disabled>Stop</button>
+            </div>
+          </div>
+          <div class="panel-right">
+            <div class="media-row">
+              <div class="media-col">
+                <span class="media-col-label">Détection (classification + YOLO)</span>
+                <div class="media-box" id="fire-media">
+                  <div class="media-placeholder">Cliquez sur « Détecter le feu » pour lancer l'inférence en direct</div>
+                </div>
+              </div>
+              <div class="media-col">
+                <span class="media-col-label">XAI Grad-CAM (actif si feu détecté)</span>
+                <div class="media-box" id="fire-media-xai">
+                  <div class="media-placeholder">En attente d'une détection de feu...</div>
+                </div>
+                <span style="text-align:center;margin-top:8px;font-size:1.25em;font-weight:700;color:#991b1b;letter-spacing:.3px;">Attention map (XAI)</span>
+              </div>
+            </div>
+            <div class="log-box" id="fire-logs"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- FALL -->
+      <div class="panel" id="panel-fall">
+        <div class="panel-header">
+          <div class="panel-icon fall">&#x1f6a8;</div>
+          <div>
+            <div class="panel-title">Détection de chute</div>
+            <div class="panel-sub">VideoMAE &mdash; 7 actions humaines, alerte sur chute</div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="panel-left">
+            <div class="card">
+              <span class="card-label">Source vidéo</span>
+              <div class="checkbox-group">
+                <label><input type="radio" name="fall-source" value="default" checked onchange="onSourceChange('fall')"><span>Défaut</span></label>
+                <label><input type="radio" name="fall-source" value="upload" onchange="onSourceChange('fall')"><span>Upload</span></label>
+                <label><input type="radio" name="fall-source" value="webcam" onchange="onSourceChange('fall')"><span>Webcam</span></label>
+              </div>
+              <input type="file" id="fall-file" accept="video/*" style="display:none;margin-top:10px;">
+              <div id="fall-source-hint" style="color:var(--text-muted);font-size:.78em;margin-top:6px;">Vidéo par défaut : falling0.mp4</div>
+            </div>
+            <button class="btn btn-fall" id="fall-btn" onclick="runFallStream()" style="width:100%">Fall detection</button>
+            <div class="ctrl-row">
+              <button class="btn btn-ghost" id="fall-pause-btn" onclick="togglePause('fall')" disabled>Pause</button>
+              <button class="btn btn-ghost btn-stop" id="fall-stop-btn" onclick="doStop('fall')" disabled>Stop</button>
+            </div>
+          </div>
+          <div class="panel-right">
+            <div class="media-box" id="fall-media">
+              <div class="media-placeholder">Cliquez sur « Fall detection » pour lancer l'inférence en direct</div>
+            </div>
+            <div class="log-box" id="fall-logs"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- OBJECTS -->
+      <div class="panel" id="panel-objects">
+        <div class="panel-header">
+          <div class="panel-icon obj">&#x1f50d;</div>
+          <div>
+            <div class="panel-title">Détection d'objets</div>
+            <div class="panel-sub">Détection d'objets du quotidien &mdash; en direct sur vidéo</div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="panel-left">
+            <div class="card">
+              <span class="card-label">Source vidéo</span>
+              <div class="checkbox-group">
+                <label><input type="radio" name="objects-source" value="default" checked onchange="onSourceChange('objects')"><span>Défaut</span></label>
+                <label><input type="radio" name="objects-source" value="upload" onchange="onSourceChange('objects')"><span>Upload</span></label>
+                <label><input type="radio" name="objects-source" value="webcam" onchange="onSourceChange('objects')"><span>Webcam</span></label>
+              </div>
+              <input type="file" id="obj-file" accept="video/*" style="display:none;margin-top:10px;">
+              <div id="objects-source-hint" style="color:var(--text-muted);font-size:.78em;margin-top:6px;">Vidéo par défaut : Objects.MOV</div>
+            </div>
+            <button class="btn btn-obj" id="obj-btn" onclick="runObjectsStream()" style="width:100%">Rechercher les objets</button>
+            <div class="ctrl-row">
+              <button class="btn btn-ghost" id="objects-pause-btn" onclick="togglePause('objects')" disabled>Pause</button>
+              <button class="btn btn-ghost btn-stop" id="objects-stop-btn" onclick="doStop('objects')" disabled>Stop</button>
+            </div>
+          </div>
+          <div class="panel-right">
+            <div class="media-box" id="obj-media">
+              <div class="media-placeholder">Cliquez sur « Rechercher les objets » pour lancer la détection en direct</div>
+            </div>
+            <div class="log-box" id="obj-logs"></div>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<script>
+// ── Theme ──
+function toggleTheme() {
+  const html = document.documentElement;
+  const isDark = html.getAttribute('data-theme') === 'dark';
+  const next = isDark ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  document.getElementById('theme-icon').innerHTML = next === 'dark' ? '&#x2600;&#xfe0f;' : '&#x1f319;';
+  document.getElementById('theme-btn').lastChild.textContent = next === 'dark' ? ' Clair' : ' Sombre';
+  localStorage.setItem('theme', next);
+}
+// Restore saved theme
+(function() {
+  const saved = localStorage.getItem('theme');
+  if (saved) {
+    document.documentElement.setAttribute('data-theme', saved);
+    if (saved === 'light') {
+      document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('theme-icon').innerHTML = '&#x1f319;';
+        document.getElementById('theme-btn').lastChild.textContent = ' Sombre';
+      });
+    }
+  }
+})();
+
+// ── Login ──
+let loginPoll = null;
+let loginTimeout = null;
+
+function startLogin() {
+  const btn = document.getElementById('login-btn');
+  const cancel = document.getElementById('login-cancel');
+  const feed = document.getElementById('login-feed');
+  const status = document.getElementById('login-status');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Analyse...';
+  cancel.style.display = 'inline-block';
+  status.innerHTML = '<span class="spinner"></span> Recherche de votre visage...';
+  feed.style.display = 'block';
+  feed.src = '/video_feed?' + Date.now();
+
+  loginPoll = setInterval(async () => {
+    try {
+      const r = await fetch('/check_login');
+      const d = await r.json();
+      if (d.success) {
+        clearInterval(loginPoll);
+        clearTimeout(loginTimeout);
+        cancel.style.display = 'none';
+        status.textContent = 'Bonjour ' + d.name + ' !';
+        status.style.color = '#22c55e';
+        setTimeout(() => {
+          feed.src = '';
+          document.getElementById('login-screen').style.display = 'none';
+          document.getElementById('dashboard').style.display = 'block';
+        }, 800);
+      }
+    } catch(e) {}
+  }, 500);
+
+  // Auto-cancel after 30s
+  loginTimeout = setTimeout(() => {
+    cancelLogin();
+    status.textContent = 'Délai dépassé — visage non reconnu. Veuillez réessayer.';
+    status.style.color = '';
+  }, 30000);
+}
+
+function cancelLogin() {
+  clearInterval(loginPoll);
+  clearTimeout(loginTimeout);
+  const feed = document.getElementById('login-feed');
+  feed.src = '';
+  feed.style.display = 'none';
+  document.getElementById('login-btn').disabled = false;
+  document.getElementById('login-btn').innerHTML = 'Se connecter';
+  document.getElementById('login-cancel').style.display = 'none';
+  document.getElementById('login-status').textContent = '';
+}
+
+async function doLogout() {
+  await fetch('/logout', {method:'POST'});
+  document.getElementById('dashboard').style.display = 'none';
+  const ls = document.getElementById('login-screen');
+  ls.style.display = 'flex';
+  document.getElementById('login-btn').disabled = false;
+  document.getElementById('login-btn').innerHTML = 'Se connecter';
+  document.getElementById('login-feed').style.display = 'none';
+  document.getElementById('login-cancel').style.display = 'none';
+  document.getElementById('login-status').textContent = '';
+}
+
+// ── Nav ──
+function switchPanel(name, el) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(s => s.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  el.classList.add('active');
+}
+
+// ── Upload helper ──
+async function uploadFile(fileInput) {
+  const file = fileInput.files[0];
+  if (!file) return null;
+  const fd = new FormData();
+  fd.append('file', file);
+  const r = await fetch('/api/upload', {method:'POST', body:fd});
+  const d = await r.json();
+  return d.id;
+}
+
+// ── Module registry: where each module's DOM lives and how to build its URL ──
+const MODULES = {
+  fire: {
+    runBtn: 'fire-btn', pauseBtn: 'fire-pause-btn', stopBtn: 'fire-stop-btn',
+    file: 'fire-file', sourceName: 'fire-source', hint: 'fire-source-hint',
+    defaultHint: 'Vidéo par défaut : fire.mp4',
+    media: 'fire-media', mediaXai: 'fire-media-xai', logs: 'fire-logs',
+    buildUrl: (params) => '/stream/fire?' + params,
+  },
+  objects: {
+    runBtn: 'obj-btn', pauseBtn: 'objects-pause-btn', stopBtn: 'objects-stop-btn',
+    file: 'obj-file', sourceName: 'objects-source', hint: 'objects-source-hint',
+    defaultHint: 'Vidéo par défaut : Objects.MOV',
+    media: 'obj-media', logs: 'obj-logs',
+    buildUrl: (params) => '/stream/objects?' + params,
+  },
+  fall: {
+    runBtn: 'fall-btn', pauseBtn: 'fall-pause-btn', stopBtn: 'fall-stop-btn',
+    file: 'fall-file', sourceName: 'fall-source', hint: 'fall-source-hint',
+    defaultHint: 'Vidéo par défaut : falling0.mp4',
+    media: 'fall-media', logs: 'fall-logs',
+    buildUrl: (params) => '/stream/fall?' + params,
+  },
+};
+
+// Active stream context per module — holds sid, EventSource, button origHTML.
+const _activeStreams = {};
+
+function $(id) { return document.getElementById(id); }
+function makeSid() { return Math.random().toString(36).slice(2,10) + Date.now().toString(36); }
+
+function getSource(mod) {
+  const el = document.querySelector('input[name="' + MODULES[mod].sourceName + '"]:checked');
+  return el ? el.value : 'default';
+}
+
+function onSourceChange(mod) {
+  const m = MODULES[mod];
+  const src = getSource(mod);
+  $(m.file).style.display = (src === 'upload') ? 'block' : 'none';
+  if (src === 'webcam')      $(m.hint).textContent = 'Inférence temps réel sur la webcam (cv2.VideoCapture(0))';
+  else if (src === 'upload') $(m.hint).textContent = 'Sélectionne une vidéo à analyser';
+  else                       $(m.hint).textContent = m.defaultHint;
+}
+
+function setControls(mod, running) {
+  const m = MODULES[mod];
+  $(m.pauseBtn).disabled = !running;
+  $(m.stopBtn).disabled  = !running;
+  $(m.pauseBtn).textContent = 'Pause';
+}
+
+async function controlStream(payload) {
+  await fetch('/stream/control', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(payload),
+  });
+}
+
+async function togglePause(mod) {
+  const ctx = _activeStreams[mod];
+  if (!ctx) return;
+  const btn = $(MODULES[mod].pauseBtn);
+  if (btn.textContent === 'Pause') {
+    await controlStream({sid: ctx.sid, action: 'pause'});
+    btn.textContent = 'Reprendre';
+  } else {
+    await controlStream({sid: ctx.sid, action: 'resume'});
+    btn.textContent = 'Pause';
+  }
+}
+
+async function doStop(mod) {
+  const ctx = _activeStreams[mod];
+  if (ctx) {
+    await controlStream({sid: ctx.sid, action: 'stop'});
+    // The generator will emit 'done' shortly, which triggers cleanup below.
+  } else {
+    // No active stream — just free the model memory directly.
+    await controlStream({action: 'release', module: mod});
+  }
+}
+
+// Reuse a single <img> per media-box so we don't recreate a DOM node on every
+// frame — that's the main source of jank on the Jetson.
+function _ensureLiveImg(box) {
+  let img = box.querySelector('img.live');
+  if (!img) {
+    box.innerHTML = '';
+    img = document.createElement('img');
+    img.className = 'live';
+    box.appendChild(img);
+  }
+  return img;
+}
+
+// ── SSE stream helper ──
+function startSSE(mod, url, sid, xaiEl) {
+  const m = MODULES[mod];
+  const runBtn = $(m.runBtn);
+  const mediaEl = $(m.media);
+  const logEl = $(m.logs);
+
+  // Close any previous stream for this module first.
+  if (_activeStreams[mod]) {
+    const prev = _activeStreams[mod];
+    prev.es.close();
+    runBtn.disabled = false;
+    runBtn.innerHTML = prev.origHTML;
+    delete _activeStreams[mod];
+  }
+
+  const origHTML = runBtn.innerHTML;
+  runBtn.disabled = true;
+  runBtn.innerHTML = '<span class="spinner"></span> Traitement...';
+  logEl.textContent = '';
+  mediaEl.innerHTML = '<span class="spinner"></span>';
+  if (xaiEl) xaiEl.innerHTML = '<div class="media-placeholder">En attente d\'une détection de feu...</div>';
+
+  const es = new EventSource(url);
+  _activeStreams[mod] = { es, sid, origHTML };
+  setControls(mod, true);
+
+  es.onmessage = function(e) {
+    const msg = JSON.parse(e.data);
+    if (msg.type === 'frame') {
+      _ensureLiveImg(mediaEl).src = 'data:image/jpeg;base64,' + msg.data;
+    } else if (msg.type === 'frame_xai' && xaiEl) {
+      _ensureLiveImg(xaiEl).src = 'data:image/jpeg;base64,' + msg.data;
+    } else if (msg.type === 'xai_clear' && xaiEl) {
+      xaiEl.innerHTML = '<div class="media-placeholder">En attente d\'une détection de feu...</div>';
+    } else if (msg.type === 'log') {
+      logEl.textContent += msg.text + '\n';
+      logEl.scrollTop = logEl.scrollHeight;
+    } else if (msg.type === 'done') {
+      es.close();
+      runBtn.disabled = false;
+      runBtn.innerHTML = origHTML;
+      setControls(mod, false);
+      delete _activeStreams[mod];
+    }
+  };
+  es.onerror = function() {
+    es.close();
+    runBtn.disabled = false;
+    runBtn.innerHTML = origHTML;
+    setControls(mod, false);
+    delete _activeStreams[mod];
+  };
+}
+
+// Build URL params (sid + source + optional upload) shared by all modules.
+async function buildStreamParams(mod, sid) {
+  const params = new URLSearchParams();
+  params.set('sid', sid);
+  const src = getSource(mod);
+  if (src === 'webcam') {
+    params.set('source', 'webcam');
+  } else if (src === 'upload') {
+    const uid = await uploadFile($(MODULES[mod].file));
+    if (uid) params.set('upload', uid);
+  }
+  return params;
+}
+
+// ── Fire ──
+async function runFireStream() {
+  const sid = makeSid();
+  const params = await buildStreamParams('fire', sid);
+  startSSE('fire', MODULES.fire.buildUrl(params), sid, $('fire-media-xai'));
+}
+
+// ── Objects ──
+async function runObjectsStream() {
+  const sid = makeSid();
+  const params = await buildStreamParams('objects', sid);
+  startSSE('objects', MODULES.objects.buildUrl(params), sid);
+}
+
+// ── Fall ──
+async function runFallStream() {
+  const sid = makeSid();
+  const params = await buildStreamParams('fall', sid);
+  startSSE('fall', MODULES.fall.buildUrl(params), sid);
+}
+
+</script>
+</body>
+</html>

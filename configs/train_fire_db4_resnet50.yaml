@@ -1,0 +1,38 @@
+# ResNet-50 baseline on FIRE_DATABASE_4 (DB3 + D-Fire train).
+# Same pipeline + same augmentations as the other DB4 runs — only the
+# backbone and the lr (slightly higher for ResNet) differ.
+
+model: resnet50              # torchvision, ResNet50_Weights.IMAGENET1K_V2
+pretrained: true
+num_classes: 3
+class_names: [no_fire, start_fire, fire]
+
+data_dir: data/FIRE_DATABASE_4
+val_split: 0.15
+imgsz: 224
+batch_size: 32
+workers: 0
+seed: 42
+
+epochs: 20
+patience: 5
+
+optimizer: adamw
+lr: 0.0001                   # standard fine-tuning lr for ResNet-50
+weight_decay: 0.05
+warmup_epochs: 2
+cos_lr: true
+label_smoothing: 0.1
+
+hflip: 0.5
+color_jitter: 0.2
+random_erasing: 0.1
+
+precision: 16-mixed
+device: cuda
+gpus: 1
+
+project_dir: models/fire
+run_name: resnet50_fire4_v1
+save_top_k: 1
+log_every_n_steps: 20

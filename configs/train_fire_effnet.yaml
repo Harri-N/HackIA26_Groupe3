@@ -1,0 +1,46 @@
+# Training config for Fire classification (EfficientNet-V2-S on FIRE_DATABASE_3).
+# Loaded by src/train_fire.py — same script as the swin_b run.
+# Kept aligned with configs/train_fire.yaml so the only material differences
+# are the backbone and a (slightly higher) learning rate suited to EfficientNet.
+
+# --- model --------------------------------------------------------------
+model: efficientnet_v2_s   # ~21M params, IMAGENET1K_V1 weights
+pretrained: true
+num_classes: 3
+class_names: [no_fire, start_fire, fire]   # forced order; aligns with D-Fire smoke/fire bboxes
+
+# --- data ---------------------------------------------------------------
+data_dir: data/FIRE_DATABASE_3   # 500 images per class
+val_split: 0.2
+imgsz: 224                  # same as swin_b run for a clean comparison
+batch_size: 32
+workers: 0                  # Python 3.13 conda env: keep at 0
+seed: 42
+
+# --- schedule -----------------------------------------------------------
+epochs: 30
+patience: 8                 # early stop on val_acc plateau
+
+# --- optimizer ----------------------------------------------------------
+optimizer: adamw
+lr: 0.0001                  # EfficientNet tolerates a slightly higher lr than swin_b
+weight_decay: 0.05
+warmup_epochs: 3
+cos_lr: true
+label_smoothing: 0.1
+
+# --- augmentation -------------------------------------------------------
+hflip: 0.5
+color_jitter: 0.2
+random_erasing: 0.1
+
+# --- runtime ------------------------------------------------------------
+precision: 16-mixed
+device: cuda
+gpus: 1
+
+# --- logging / output ---------------------------------------------------
+project_dir: models/fire
+run_name: effnet_v2_s_fire3_v1
+save_top_k: 1
+log_every_n_steps: 5

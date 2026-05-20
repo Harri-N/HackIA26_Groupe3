@@ -1,0 +1,59 @@
+# Training config for FireZone (YOLO26 on D-Fire).
+# Loaded by src/train_firezone.py. CLI flags override these values.
+
+model: yolo26m.pt          # n / s / m / l / x
+data:  configs/dfire.yaml  # dataset spec (paths + class names)
+name:  yolo26m_dfire       # run sub-dir under project_dir
+project_dir: models/firezone
+
+# --- schedule -----------------------------------------------------------
+epochs: 60
+patience: 20        # early stop on val mAP50-95 plateau
+close_mosaic: 15    # turn off mosaic in the last N epochs
+seed: 42
+
+# --- data ---------------------------------------------------------------
+imgsz: 640
+batch: 48
+workers: 0          # forced to 0: /dev/shm is hard-capped at 1 GB in this container (no remount even via sudo) so >0 workers OOM /dev/shm and stall. cache='ram' carries the load instead.
+cache: ram          # 'ram' | 'disk' | false  (≈ 9 GB for D-Fire)
+device: "0"
+amp: true
+
+# --- optimizer ----------------------------------------------------------
+optimizer: SGD
+lr0: 0.01
+lrf: 0.01
+cos_lr: true
+momentum: 0.937
+weight_decay: 0.0005
+warmup_epochs: 3.0
+warmup_momentum: 0.8
+warmup_bias_lr: 0.1
+
+# --- loss weights -------------------------------------------------------
+box: 7.5
+cls: 0.5
+dfl: 1.5
+
+# --- augmentation -------------------------------------------------------
+hsv_h: 0.015
+hsv_s: 0.7
+hsv_v: 0.4
+degrees: 5.0
+translate: 0.1
+scale: 0.5
+shear: 2.0
+perspective: 0.0
+flipud: 0.0          # smoke/fire are gravity-aligned — no vertical flip
+fliplr: 0.5
+mosaic: 1.0
+mixup: 0.1
+copy_paste: 0.1
+erasing: 0.2
+auto_augment: randaugment
+
+# --- logging ------------------------------------------------------------
+save_period: 10
+plots: true
+verbose: true

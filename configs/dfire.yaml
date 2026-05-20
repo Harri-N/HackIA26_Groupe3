@@ -1,0 +1,9 @@
+# D-Fire YOLO dataset config (fire/smoke detection)
+path: /home/harrison/workdir/HackIA/data/firezone/D-Fire
+train: images/train
+val: images/valid
+test: images/test
+
+names:
+  0: smoke
+  1: fire

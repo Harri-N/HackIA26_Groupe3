@@ -1,0 +1,44 @@
+# Swin-B on FIRE_DATABASE_4 (DB3 + D-Fire train, balanced 2000/class).
+# Pre-split train/val/test layout; held-out test is data/FIRE_DATABASE_4/test.
+
+# --- model --------------------------------------------------------------
+model: swin_b
+pretrained: true
+num_classes: 3
+class_names: [no_fire, start_fire, fire]
+
+# --- data ---------------------------------------------------------------
+data_dir: data/FIRE_DATABASE_4   # train/val/test subdirs
+val_split: 0.15                  # ignored when train/val subdirs exist
+imgsz: 224
+batch_size: 24
+workers: 0
+seed: 42
+
+# --- schedule -----------------------------------------------------------
+epochs: 20
+patience: 5
+
+# --- optimizer ----------------------------------------------------------
+optimizer: adamw
+lr: 0.00005
+weight_decay: 0.05
+warmup_epochs: 2
+cos_lr: true
+label_smoothing: 0.1
+
+# --- augmentation -------------------------------------------------------
+hflip: 0.5
+color_jitter: 0.2
+random_erasing: 0.1
+
+# --- runtime ------------------------------------------------------------
+precision: 16-mixed
+device: cuda
+gpus: 1
+
+# --- logging / output ---------------------------------------------------
+project_dir: models/fire
+run_name: swin_b_fire4_v1
+save_top_k: 1
+log_every_n_steps: 20
